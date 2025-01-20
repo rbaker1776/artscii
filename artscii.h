@@ -33,8 +33,15 @@ typedef enum Color
     RED = 0,
 } Color;
 
+typedef struct
+{
+    int rows, cols;
+    uint32_t** img;
+} Image;
 
-uint32_t** read_img(const char* filepath);
+
+
+Image read_img(const char* filepath);
 
 void process_img(const uint32_t** img, int img_height, int img_width);
 

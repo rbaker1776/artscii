@@ -12,7 +12,7 @@ static const double kernel[KERNEL_SZ][KERNEL_SZ] = {
     { 3.0 / 64, 8.0 / 64,  3.0 / 64, },
 };
 
-uint32_t** read_img(const char* filepath) {
+Image read_img(const char* filepath) {
     // Read in the BMP Image
     FILE* fptr = fopen(filepath, "rb");
     BMPImage bmp_img;
@@ -45,7 +45,7 @@ uint32_t** read_img(const char* filepath) {
     }
 
     free(bmp_img.data);
-    return img;
+    return (Image) { .cols=cols, .rows=rows, .img=img };
 }
 
 void process_img(const uint32_t** img, int img_width, int img_height)
