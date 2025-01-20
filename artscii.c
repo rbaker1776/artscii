@@ -18,8 +18,8 @@ uint32_t** read_img(const char* filepath) {
     BMPImage bmp_img;
     fread(&(bmp_img.header), sizeof(BMPHeader), 1, fptr);
     bmp_img.data = malloc(bmp_img.header.image_size_bytes);
-    fseek(fptr, 0, SEEK_SET);
-    fread(&(bmp_img), sizeof(BMPImage), 1, fptr);
+    fseek(fptr, 54, SEEK_SET);
+    fread(bmp_img.data, bmp_img.header.image_size_bytes, 1, fptr);
     fclose(fptr);
 
     // Allocate space for image
@@ -118,8 +118,7 @@ double cmp_img(const uint32_t** img1, const uint32_t** img2)
 
 int main()
 {
-    printf("start");
     uint32_t** img = read_img("./images/car.bmp");
-    printf("start");
+
     return 0;
 }
