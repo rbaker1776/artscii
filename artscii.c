@@ -118,7 +118,8 @@ double cmp_img(const uint32_t** img1, const uint32_t** img2)
 
 int main()
 {
+    printf("start");
     uint32_t** img = read_img("./images/car.bmp");
-
+    printf("start");
     return 0;
 }

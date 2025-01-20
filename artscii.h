@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-
+#pragma pack (1)
 typedef struct {             // Total: 54 bytes
     uint16_t  type;             // Magic identifier: 0x4d42
     uint32_t  size;             // File size in bytes
