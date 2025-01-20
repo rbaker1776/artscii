@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "artscii.h"
 
 
@@ -9,8 +10,40 @@ static const double kernel[KERNEL_SZ][KERNEL_SZ] = {
     {  },
 };
 
-void read_img(const char* filepath, uint32_t** img) {
+uint32_t** read_img(const char* filepath) {
+    // Read in the BMP Image
     FILE* fptr = fopen(filepath, "rb");
+    BMPImage bmp_img;
+    fread(&(bmp_img.header), sizeof(BMPHeader), 1, fptr);
+    bmp_img.data = malloc(bmp_img.header.image_size_bytes);
+    fseek(fptr, 0, SEEK_SET);
+    fread(&(bmp_img), sizeof(BMPImage), 1, fptr);
+    fclose(fptr);
+
+    // Allocate space for image
+    int cols = bmp_img.header.width_px, rows = bmp_img.header.height_px;
+    uint32_t** img = malloc(sizeof *img * rows);
+    for (int i = 0; i < rows; i++) 
+        img[i] = calloc(cols, sizeof *(img[i]));
+    
+    // Read in the image
+    uint8_t* data = bmp_img.data;
+    for (int j = rows-1; j >= 0; j--) {
+        int num_bytes_read = 0;
+        
+        for (int i = 0; i < cols; i++) {
+            img[j][i] = *(data++);
+            img[j][i] |= *(data++) << 8;
+            img[j][i] |= *(data++) << 16;
+            num_bytes_read += 3;
+        }
+
+        while (num_bytes_read % 4)
+            data++, num_bytes_read++;        
+    }
+
+    free(bmp_img.data);
+    return img;
 }
 
 void process_img(const uint32_t** img);
