@@ -4,10 +4,11 @@
 
 
 #define KERNEL_SZ 3
+
 static const double kernel[KERNEL_SZ][KERNEL_SZ] = {
-    {  },
-    { 0.125, 0.3125, 0.125 },
-    {  },
+    { 3.0 / 64, 8.0 / 64,  3.0 / 64, },
+    { 8.0 / 64, 20.0 / 64, 8.0 / 64, },
+    { 3.0 / 64, 8.0 / 64,  3.0 / 64, },
 };
 
 uint32_t** read_img(const char* filepath) {
@@ -52,7 +53,35 @@ Color get_dominant_color(const uint32_t** img_sec);
 
 void print_char(const char c, Color color);
 
-double cmp_img(const uint32_t** img1, const uint32_t** img2);
+static double pixel_delta(uint32_t a, uint32_t b)
+{
+    double 
+}
+
+double cmp_img(const uint32_t** img1, const uint32_t** img2)
+{
+    double img_delta = 0;
+
+    for (int x = 0; x < 8; ++x) for (int y = 0; y < 8; ++y)
+    {
+        // kernel is centered at (x, y)
+        double delta = 0;
+        int counted_pixels = 0;
+
+        for (int i = -1; i <= 1; ++i) for (int j = -1; j <= 1; ++j)
+        {
+            // if out of bounds then continue
+            if ((x + i < 0) || (x + i > 7) || (y - j < 0) || (y + j > 7))
+                continue;
+
+            // else increment counted_pixels
+            ++counted_pixels;
+
+        }
+    }
+
+    return img_delta;
+}
 
 
 int main()
