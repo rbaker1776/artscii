@@ -29,9 +29,9 @@ typedef struct {
     uint8_t* data; 
 } BMPImage;
 
-typedef enum Color
+typedef struct
 {
-    RED = 0,
+    int red, green, blue;
 } Color;
 
 typedef struct
@@ -46,7 +46,7 @@ Image read_img(const char* filepath);
 
 void process_img(const uint32_t** img, int img_height, int img_width);
 
-Color get_dominant_color(const uint32_t** img_sec);
+Color get_dominant_color(const uint32_t img[8][8], const uint32_t match[8][8]);
 
 void print_char(const char c, Color color);
 

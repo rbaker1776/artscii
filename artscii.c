@@ -76,9 +76,25 @@ void process_img(const uint32_t** img, int img_width, int img_height)
     }
 }
 
-Color get_dominant_color(const uint32_t** img_sec);
+Color get_dominant_color(const uint32_t img[8][8], const uint32_t match[8][8]) {
+    int red = 0, green = 0, blue = 0;
+    int ct = 0;
 
-void print_char(const char c, Color color);
+    for (int i = 0; i < 8; i++) for (int j = 0; j < 8; j++) {
+        if (match[i][j]) {
+            red += (img[i][j] >> 16) & ((1 << 8) - 1);
+            green += (img[i][j] >> 8) & ((1 << 8) - 1);
+            blue += img[i][j] & ((1 << 8) - 1);
+            ct++;
+        }
+    }
+
+    return (Color) { .red = red / ct, .green = green / ct, .blue = blue / ct };
+}
+
+void print_char(const char c, Color color) {
+    printf("\033[38;2;%d;%d;%dm%c\e[0m\n", color.red, color.green, color.blue, c);
+}
 
 static double pixel_delta(uint32_t a, uint32_t b)
 {
