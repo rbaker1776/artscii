@@ -50,9 +50,9 @@ Image read_img(const char* filepath) {
 
 void process_img(const uint32_t** img, int img_width, int img_height)
 {
-    for (int y = 0; y < img_height; y += 8)
+    for (int y = 0; y < img_height - 8; y += 8)
     {
-        for (int x = 8; x < img_width; x += 8)
+        for (int x = 0; x < img_width - 8; x += 8)
         {
             uint32_t img_sec[8][8];
             for (int i = 0; i < 8; ++i) for (int j = 0; j < 8; ++j)
@@ -63,16 +63,16 @@ void process_img(const uint32_t** img, int img_width, int img_height)
             for (int c = 0; c < 95; ++c)
             {
                 const double score = cmp_img(img_sec, char_matrices[c]);
+                printf("%lf\n", score);
                 if (score < best_score)
                 {
                     best_score = score;
                     best_match = 32 + c;
                 }
             }
-
-            printf("%c", best_match); 
+            //printf("%c", best_match); 
         }
-        printf("\n");
+        //printf("\n");
     }
 }
 
