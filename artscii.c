@@ -58,6 +58,7 @@ void process_img(const uint32_t** img, int img_width, int img_height)
             for (int i = 0; i < 8; ++i) for (int j = 0; j < 8; ++j)
                 img_sec[i][j] = img[x + i][y + j];
 
+            int best_c = 0;
             double best_score = 1;
             char best_match = '\0';
             for (int c = 0; c < 95; ++c)
@@ -67,9 +68,13 @@ void process_img(const uint32_t** img, int img_width, int img_height)
                 {
                     best_score = score;
                     best_match = 32 + c;
+                    best_c = c;
                 }
             }
-            printf("%c%c", best_match, best_match); 
+            const Color color = get_dominant_color(img_sec, char_matrices[best_c]);
+            //printf("(%d, %d, %d)\n", color.red, color.green, color.blue);
+            print_char(best_match, color);
+            print_char(best_match, color);
         }
         printf("\n");
     }
@@ -81,9 +86,9 @@ Color get_dominant_color(const uint32_t img[8][8], const uint32_t match[8][8]) {
 
     for (int i = 0; i < 8; i++) for (int j = 0; j < 8; j++) {
         if (match[i][j]) {
-            red += (img[i][j] >> 16) & ((1 << 8) - 1);
-            green += (img[i][j] >> 8) & ((1 << 8) - 1);
-            blue += img[i][j] & ((1 << 8) - 1);
+            red   += (img[i][j] >> 16) & ((1 << 8) - 1);
+            green += (img[i][j] >> 8)  & ((1 << 8) - 1);
+            blue  += (img[i][j])       & ((1 << 8) - 1);
             ct++;
         }
     }
@@ -92,7 +97,7 @@ Color get_dominant_color(const uint32_t img[8][8], const uint32_t match[8][8]) {
 }
 
 void print_char(const char c, Color color) {
-    printf("\033[38;2;%d;%d;%dm%c\e[0m\n", color.red, color.green, color.blue, c);
+    printf("\033[38;2;%d;%d;%dm%c\e[0m", color.red, color.green, color.blue, c);
 }
 
 static double pixel_delta(uint32_t a, uint32_t b)
@@ -107,7 +112,7 @@ static uint32_t grayify(uint32_t pixel)
     uint32_t b = ((1u << 8) - 1) & pixel;
     uint32_t g = ((1u << 8) - 1) & (pixel >> 8);
     uint32_t r = ((1u << 8) - 1) & (pixel >> 16);
-    return (uint32_t)(0.2989 * r + 0.5870 * g + 0.1140 * b);
+    return (uint32_t)(0.3333 * r + 0.3333 * g + 0.3333 * b);
 }
 
 double cmp_img(const uint32_t img1[8][8], const uint32_t img2[8][8])
@@ -141,7 +146,7 @@ double cmp_img(const uint32_t img1[8][8], const uint32_t img2[8][8])
 
 int main()
 {
-    const Image img = read_img("./images/airplane.bmp");
+    const Image img = read_img("./images/colors.bmp");
     process_img((const uint32_t**)img.img, img.rows, img.cols);
 
     return 0;
