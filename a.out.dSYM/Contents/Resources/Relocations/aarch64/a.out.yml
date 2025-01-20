@@ -1,0 +1,13 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     a.out
+relocations:
+  - { offset: 0x26, size: 0x8, addend: 0x0, symName: _read_img, symObjAddr: 0x0, symBinAddr: 0x100001F88, symSize: 0x250 }
+  - { offset: 0x4D, size: 0x8, addend: 0x0, symName: _char_matrices, symObjAddr: 0x798, symBinAddr: 0x100002768, symSize: 0x0 }
+  - { offset: 0x91, size: 0x8, addend: 0x0, symName: _kernel, symObjAddr: 0x1F58, symBinAddr: 0x100003F28, symSize: 0x0 }
+  - { offset: 0xEB, size: 0x8, addend: 0x0, symName: _read_img, symObjAddr: 0x0, symBinAddr: 0x100001F88, symSize: 0x250 }
+  - { offset: 0x1D8, size: 0x8, addend: 0x0, symName: _process_img, symObjAddr: 0x250, symBinAddr: 0x1000021D8, symSize: 0x214 }
+  - { offset: 0x2FA, size: 0x8, addend: 0x0, symName: _cmp_img, symObjAddr: 0x464, symBinAddr: 0x1000023EC, symSize: 0x248 }
+  - { offset: 0x3D8, size: 0x8, addend: 0x0, symName: _pixel_delta, symObjAddr: 0x6AC, symBinAddr: 0x100002634, symSize: 0x7C }
+  - { offset: 0x41C, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x728, symBinAddr: 0x1000026B0, symSize: 0x3C }
+...

@@ -30,12 +30,13 @@ typedef struct {
 
 typedef enum Color
 {
+    RED = 0,
 } Color;
 
 
 uint32_t** read_img(const char* filepath);
 
-void process_img(const uint32_t** img);
+void process_img(const uint32_t** img, int img_height, int img_width);
 
 Color get_dominant_color(const uint32_t** img_sec);
 

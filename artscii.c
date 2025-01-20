@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "artscii.h"
+#include "ascii.h"
 
 
 #define KERNEL_SZ 3
@@ -47,7 +48,33 @@ uint32_t** read_img(const char* filepath) {
     return img;
 }
 
-void process_img(const uint32_t** img);
+void process_img(const uint32_t** img, int img_width, int img_height)
+{
+    for (int y = 0; y < img_height; y += 8)
+    {
+        for (int x = 8; x < img_width; x += 8)
+        {
+            uint32_t img_sec[8][8];
+            for (int i = 0; i < 8; ++i) for (int j = 0; j < 8; ++j)
+                img_sec[i][j] = img[x + i][y + j];
+
+            double best_score = 1;
+            char best_match = '\0';
+            for (int c = 0; c < 95; ++c)
+            {
+                const double score = cmp_img((const uint32_t**)img_sec, (const uint32_t**)char_matrices[c]);
+                if (score < best_score)
+                {
+                    best_score = score;
+                    best_match = 32 + c;
+                }
+            }
+
+            printf("%c", best_match); 
+        }
+        printf("\n");
+    }
+}
 
 Color get_dominant_color(const uint32_t** img_sec);
 
@@ -55,7 +82,9 @@ void print_char(const char c, Color color);
 
 static double pixel_delta(uint32_t a, uint32_t b)
 {
-    double 
+    int32_t delta = (int32_t)a - (int32_t)b;
+    delta = (delta < 0 ? -delta : delta);
+    return (double)delta / 256;
 }
 
 double cmp_img(const uint32_t** img1, const uint32_t** img2)
@@ -68,57 +97,28 @@ double cmp_img(const uint32_t** img1, const uint32_t** img2)
         double delta = 0;
         int counted_pixels = 0;
 
-        for (int i = -1; i <= 1; ++i) for (int j = -1; j <= 1; ++j)
+        for (int dx = -1; dx <= 1; ++dx) for (int dy = -1; dy <= 1; ++dy)
         {
             // if out of bounds then continue
-            if ((x + i < 0) || (x + i > 7) || (y - j < 0) || (y + j > 7))
+            if ((x + dx < 0) || (x + dx > 7) || (y + dy < 0) || (y + dy > 7))
                 continue;
 
             // else increment counted_pixels
             ++counted_pixels;
-
+            delta += kernel[1 + dx][1 + dy] * pixel_delta(img1[x + dx][y + dy], img2[x + dx][y + dy]);
         }
+
+        delta *= (double)(KERNEL_SZ * KERNEL_SZ) / counted_pixels;
+        img_delta += delta;
     }
 
-    return img_delta;
+    return img_delta / 64;
 }
 
 
 int main()
 {
-    printf("\x1b[30mHello!\x1b[0m\n");
-    printf("\x1b[31mHello!\x1b[0m\n");
-    printf("\x1b[32mHello!\x1b[0m\n");
-    printf("\x1b[33mHello!\x1b[0m\n");
-    printf("\x1b[34mHello!\x1b[0m\n");
-    printf("\x1b[35mHello!\x1b[0m\n");
-    printf("\x1b[36mHello!\x1b[0m\n");
-    printf("\x1b[37mHello!\x1b[0m\n");
+    uint32_t** img = read_img("./images/car.bmp");
 
-    printf("\x1b[40mHello!\x1b[0m\n");
-    printf("\x1b[41mHello!\x1b[0m\n");
-    printf("\x1b[42mHello!\x1b[0m\n");
-    printf("\x1b[43mHello!\x1b[0m\n");
-    printf("\x1b[44mHello!\x1b[0m\n");
-    printf("\x1b[45mHello!\x1b[0m\n");
-    printf("\x1b[46mHello!\x1b[0m\n");
-    printf("\x1b[47mHello!\x1b[0m\n");
-
-    printf("\x1b[90mHello!\x1b[0m\n");
-    printf("\x1b[91mHello!\x1b[0m\n");
-    printf("\x1b[92mHello!\x1b[0m\n");
-    printf("\x1b[93mHello!\x1b[0m\n");
-    printf("\x1b[94mHello!\x1b[0m\n");
-    printf("\x1b[95mHello!\x1b[0m\n");
-    printf("\x1b[96mHello!\x1b[0m\n");
-    printf("\x1b[97mHello!\x1b[0m\n");
-
-    printf("\x1b[100mHello!\x1b[0m\n");
-    printf("\x1b[101mHello!\x1b[0m\n");
-    printf("\x1b[102mHello!\x1b[0m\n");
-    printf("\x1b[103mHello!\x1b[0m\n");
-    printf("\x1b[104mHello!\x1b[0m\n");
-    printf("\x1b[105mHello!\x1b[0m\n");
-    printf("\x1b[106mHello!\x1b[0m\n");
-    printf("\x1b[107mHello!\x1b[0m\n");
+    return 0;
 }
