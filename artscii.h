@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#pragma pack (1)
+#pragma pack (push, 1)
 typedef struct {             // Total: 54 bytes
     uint16_t  type;             // Magic identifier: 0x4d42
     uint32_t  size;             // File size in bytes
@@ -22,6 +22,7 @@ typedef struct {             // Total: 54 bytes
     uint32_t  num_colors;       // Number of colors  
     uint32_t  important_colors; // Important colors 
 } BMPHeader;
+#pragma pack (pop)
 
 typedef struct {
     BMPHeader header;
@@ -49,7 +50,7 @@ Color get_dominant_color(const uint32_t** img_sec);
 
 void print_char(const char c, Color color);
 
-double cmp_img(const uint32_t** img1, const uint32_t** img2);
+double cmp_img(const uint32_t img1[8][8], const uint32_t img2[8][8]);
 
 
 #endif // ARTSCII_H_55FF061DA2AB9BB3

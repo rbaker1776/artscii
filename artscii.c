@@ -62,7 +62,7 @@ void process_img(const uint32_t** img, int img_width, int img_height)
             char best_match = '\0';
             for (int c = 0; c < 95; ++c)
             {
-                const double score = cmp_img((const uint32_t**)img_sec, (const uint32_t**)char_matrices[c]);
+                const double score = cmp_img(img_sec, char_matrices[c]);
                 if (score < best_score)
                 {
                     best_score = score;
@@ -87,7 +87,7 @@ static double pixel_delta(uint32_t a, uint32_t b)
     return (double)delta / 256;
 }
 
-double cmp_img(const uint32_t** img1, const uint32_t** img2)
+double cmp_img(const uint32_t img1[8][8], const uint32_t img2[8][8])
 {
     double img_delta = 0;
 
@@ -118,7 +118,8 @@ double cmp_img(const uint32_t** img1, const uint32_t** img2)
 
 int main()
 {
-    uint32_t** img = read_img("./images/car.bmp");
+    const Image img = read_img("./images/car.bmp");
+    process_img((const uint32_t**)img.img, img.rows, img.cols);
 
     return 0;
 }

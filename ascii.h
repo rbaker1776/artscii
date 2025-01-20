@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 
-static const uint8_t char_matrices[95][8][8] =
+static const uint32_t char_matrices[95][8][8] =
 {
 	{
 		{ 0,   0,   0,   0,   0,   0,   0,   0,   },
