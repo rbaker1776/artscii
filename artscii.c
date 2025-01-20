@@ -2,6 +2,13 @@
 #include "artscii.h"
 
 
+#define KERNEL_SZ 3
+static const double kernel[KERNEL_SZ][KERNEL_SZ] = {
+    {  },
+    { 0.125, 0.3125, 0.125 },
+    {  },
+};
+
 void read_img(const char* filepath, uint32_t** img);
 
 void process_img(const uint32_t** img);
