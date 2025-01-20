@@ -2,7 +2,9 @@
 #include "artscii.h"
 
 
-void read_img(const char* filepath, uint32_t** img);
+void read_img(const char* filepath, uint32_t** img) {
+    FILE* fptr = fopen(filepath, "rb");
+}
 
 void process_img(const uint32_t** img);
 
