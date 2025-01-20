@@ -50,9 +50,9 @@ Image read_img(const char* filepath) {
 
 void process_img(const uint32_t** img, int img_width, int img_height)
 {
-    for (int y = 0; y < img_height - 8; y += 8)
+    for (int x = 0; x < img_width - 8; x += 8)
     {
-        for (int x = 0; x < img_width - 8; x += 8)
+        for (int y = 0; y < img_height - 8; y += 8)
         {
             uint32_t img_sec[8][8];
             for (int i = 0; i < 8; ++i) for (int j = 0; j < 8; ++j)
@@ -63,16 +63,15 @@ void process_img(const uint32_t** img, int img_width, int img_height)
             for (int c = 0; c < 95; ++c)
             {
                 const double score = cmp_img(img_sec, char_matrices[c]);
-                printf("%lf\n", score);
                 if (score < best_score)
                 {
                     best_score = score;
                     best_match = 32 + c;
                 }
             }
-            //printf("%c", best_match); 
+            printf("%c%c", best_match, best_match); 
         }
-        //printf("\n");
+        printf("\n");
     }
 }
 
@@ -82,9 +81,17 @@ void print_char(const char c, Color color);
 
 static double pixel_delta(uint32_t a, uint32_t b)
 {
-    int32_t delta = (int32_t)a - (int32_t)b;
+    double delta = (double)a - b;
     delta = (delta < 0 ? -delta : delta);
-    return (double)delta / 256;
+    return delta / 256;
+}
+
+static uint32_t grayify(uint32_t pixel)
+{
+    uint32_t b = ((1u << 8) - 1) & pixel;
+    uint32_t g = ((1u << 8) - 1) & (pixel >> 8);
+    uint32_t r = ((1u << 8) - 1) & (pixel >> 16);
+    return (uint32_t)(0.2989 * r + 0.5870 * g + 0.1140 * b);
 }
 
 double cmp_img(const uint32_t img1[8][8], const uint32_t img2[8][8])
@@ -105,7 +112,7 @@ double cmp_img(const uint32_t img1[8][8], const uint32_t img2[8][8])
 
             // else increment counted_pixels
             ++counted_pixels;
-            delta += kernel[1 + dx][1 + dy] * pixel_delta(img1[x + dx][y + dy], img2[x + dx][y + dy]);
+            delta += kernel[1 + dx][1 + dy] * pixel_delta(grayify(img1[x + dx][y + dy]), img2[x + dx][y + dy]);
         }
 
         delta *= (double)(KERNEL_SZ * KERNEL_SZ) / counted_pixels;
@@ -118,7 +125,7 @@ double cmp_img(const uint32_t img1[8][8], const uint32_t img2[8][8])
 
 int main()
 {
-    const Image img = read_img("./images/car.bmp");
+    const Image img = read_img("./images/purduetrain.bmp");
     process_img((const uint32_t**)img.img, img.rows, img.cols);
 
     return 0;
