@@ -141,7 +141,7 @@ double cmp_img(const uint32_t img1[8][8], const uint32_t img2[8][8])
 
 int main()
 {
-    const Image img = read_img("./images/purduetrain.bmp");
+    const Image img = read_img("./images/airplane.bmp");
     process_img((const uint32_t**)img.img, img.rows, img.cols);
 
     return 0;
