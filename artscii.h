@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <float.h>
 
 #pragma pack (push, 1)
 typedef struct {                // Total: 54 bytes

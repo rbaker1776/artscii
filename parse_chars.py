@@ -1,5 +1,3 @@
-
-
 char_mats = [
     [ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 ],   # U+0020 (space)
     [ 0x18, 0x3C, 0x3C, 0x18, 0x18, 0x00, 0x18, 0x00 ],   # U+0021 (!)
@@ -102,14 +100,18 @@ assert(len(char_mats) == 95)
 
 def stringify_mat(mat):
     ret = [ "\t{" ]
+
     for byte in mat:
         ret += [[ "\t\t{ " ]]
+    
         for i in range(0, 8):
             if byte & (1 << i):
                 ret[-1] += [ "255, " ]
             else:
                 ret[-1] += [ "0,   " ]
+    
         ret[-1] = "".join(ret[-1]) + "},"
+    
     ret.append("\t},\n")
     return '\n'.join(ret) 
 
