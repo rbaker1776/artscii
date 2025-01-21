@@ -69,6 +69,8 @@ void process_img(const uint32_t** img, int img_width, int img_height) {
                 }
             }
 
+            best_c = (best_c == 0 ? ('M' - 32) : best_c);
+            best_match = (best_match == ' ' ? 'M' : best_match);
             const Color color = get_dominant_color(img_sec, char_matrices[best_c]);
             //printf("(%d, %d, %d)\n", color.red, color.green, color.blue);
             print_char(best_match, color);
