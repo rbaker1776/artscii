@@ -1,10 +1,13 @@
 #ifndef ARTSCII_H_55FF061DA2AB9BB3
 #define ARTSCII_H_55FF061DA2AB9BB3
 
+
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
 
 #pragma pack (push, 1)
-typedef struct {             // Total: 54 bytes
+typedef struct {                // Total: 54 bytes
     uint16_t  type;             // Magic identifier: 0x4d42
     uint32_t  size;             // File size in bytes
     uint16_t  reserved1;        // Not used
@@ -24,15 +27,17 @@ typedef struct {             // Total: 54 bytes
 } BMPHeader;
 #pragma pack (pop)
 
+
 typedef struct {
     BMPHeader header;
     uint8_t* data; 
 } BMPImage;
 
-typedef struct
-{
+
+typedef struct {
     int red, green, blue;
 } Color;
+
 
 typedef struct
 {
@@ -41,16 +46,21 @@ typedef struct
 } Image;
 
 
+#define KERNEL_SZ 3
+
+static const double kernel[KERNEL_SZ][KERNEL_SZ] = {
+    { 3.0 / 64, 8.0 / 64,  3.0 / 64, },
+    { 8.0 / 64, 20.0 / 64, 8.0 / 64, },
+    { 3.0 / 64, 8.0 / 64,  3.0 / 64, },
+};
+
 
 Image read_img(const char* filepath);
-
+Image free_img(Image img);
 void process_img(const uint32_t** img, int img_height, int img_width);
-
 Color get_dominant_color(const uint32_t img[8][8], const uint32_t match[8][8]);
-
 void print_char(const char c, Color color);
-
-double cmp_img(const uint32_t img1[8][8], const uint32_t img2[8][8]);
+double cmp_sector(const uint32_t img1[8][8], const uint32_t img2[8][8]);
 
 
 #endif // ARTSCII_H_55FF061DA2AB9BB3

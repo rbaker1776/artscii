@@ -1,16 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "artscii.h"
 #include "ascii.h"
 
-
-#define KERNEL_SZ 3
-
-static const double kernel[KERNEL_SZ][KERNEL_SZ] = {
-    { 3.0 / 64, 8.0 / 64,  3.0 / 64, },
-    { 8.0 / 64, 20.0 / 64, 8.0 / 64, },
-    { 3.0 / 64, 8.0 / 64,  3.0 / 64, },
-};
 
 Image read_img(const char* filepath) {
     // Read in the BMP Image
@@ -48,6 +38,15 @@ Image read_img(const char* filepath) {
     return (Image) { .cols=cols, .rows=rows, .img=img };
 }
 
+
+Image free_img(Image img) {
+    for (int i = 0; i < img.rows; i++) 
+        free(img.img[i]);
+    free(img.img);
+    return (Image) { .rows=0, .cols=0, .img=NULL };
+}
+
+
 void process_img(const uint32_t** img, int img_width, int img_height)
 {
     for (int x = 0; x < img_width - 8; x += 8)
@@ -63,7 +62,7 @@ void process_img(const uint32_t** img, int img_width, int img_height)
             char best_match = '\0';
             for (int c = 0; c < 95; ++c)
             {
-                const double score = cmp_img(img_sec, char_matrices[c]);
+                const double score = cmp_sector(img_sec, char_matrices[c]);
                 if (score < best_score)
                 {
                     best_score = score;
@@ -115,7 +114,7 @@ static uint32_t grayify(uint32_t pixel)
     return (uint32_t)(0.3333 * r + 0.3333 * g + 0.3333 * b);
 }
 
-double cmp_img(const uint32_t img1[8][8], const uint32_t img2[8][8])
+double cmp_sector(const uint32_t img1[8][8], const uint32_t img2[8][8])
 {
     double img_delta = 0;
 
@@ -144,10 +143,16 @@ double cmp_img(const uint32_t img1[8][8], const uint32_t img2[8][8])
 }
 
 
-int main()
+int main(int argc, char** argv)
 {
-    const Image img = read_img("./images/colors.bmp");
-    process_img((const uint32_t**)img.img, img.rows, img.cols);
+    if (argc < 2) {
+        printf("Format: ./show <filepath>.bmp");
+        return EXIT_FAILURE;
+    }
+    
+    Image img = read_img(argv[1]);
+    process_img((const uint32_t**) img.img, img.rows, img.cols);
+    img = free_img(img);
 
     return 0;
 }
