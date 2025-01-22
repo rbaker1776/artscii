@@ -9,7 +9,7 @@ Image read_img(const char *filepath)
     BMPImage bmp_img;
     fread(&(bmp_img.header), sizeof(BMPHeader), 1, fptr);
     bmp_img.data = malloc(bmp_img.header.image_size_bytes);
-    fseek(fptr, 54, SEEK_SET);
+    fseek(fptr, 14+bmp_img.header.dib_header_size, SEEK_SET);
     fread(bmp_img.data, bmp_img.header.image_size_bytes, 1, fptr);
     fclose(fptr);
 
@@ -120,7 +120,7 @@ Color get_dominant_color(const uint32_t img[8][8], const uint32_t match[8][8])
 
 void print_char(const char c, Color color)
 {
-    printf("\033[48;2;%d;%d;%dm \e[0m", color.red, color.green, color.blue);
+    printf("\033[38;2;%d;%d;%dm%c\e[0m", color.red, color.green, color.blue, c);
 }
 
 
