@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <float.h>
+#include <stdbool.h>
 
 #pragma pack (push, 1)
 typedef struct {                // Total: 54 bytes
@@ -40,12 +41,21 @@ typedef struct {
 } Color;
 
 
-typedef struct
-{
+typedef struct {
     int rows, cols;
     uint32_t** img;
 } Image;
 
+
+typedef struct {
+    struct {
+        Color color;
+        int count;
+    } colors[64];
+    
+    int curr;
+    int m_idx;
+} Vector;
 
 #define KERNEL_SZ 3
 
@@ -54,6 +64,10 @@ static const double kernel[KERNEL_SZ][KERNEL_SZ] = {
     { 8.0 / 64, 20.0 / 64, 8.0 / 64, },
     { 3.0 / 64, 8.0 / 64,  3.0 / 64, },
 };
+
+
+void add_color(Vector* vec, Color color);
+Color get_dom_color(Vector* vec);
 
 
 Image read_img(const char* filepath);
