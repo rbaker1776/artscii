@@ -81,10 +81,7 @@ void process_img(const uint32_t **img, int img_width, int img_height)
 
             best_c = (best_c == 0 ? ('M' - 32) : best_c);
             best_match = (best_match == ' ' ? 'M' : best_match);
-            const Color color = get_dominant_color(img_sec, char_matrices[best_c]);
-            // printf("(%d, %d, %d)\n", color.red, color.green, color.blue);
-            print_char(best_match, color);
-            print_char(best_match, color);
+            display(img_sec, char_matrices[best_c], best_match);
         }
 
         printf("\n");
@@ -92,35 +89,39 @@ void process_img(const uint32_t **img, int img_width, int img_height)
 }
 
 
-// Finds the most common color in the img as the dominant color
-Color get_dominant_color(const uint32_t img[8][8], const uint32_t match[8][8])
+static void print_char(const char c, Color color)
 {
-    Color color;
-    Vector vec = (Vector) { .curr = 0, .m_idx = 0 };
+    printf("\033[38;2;%d;%d;%dm%c\e[0m", color.red, color.green, color.blue, c);
+}
+
+
+// Finds the most common color in the img as the dominant color
+void display(const uint32_t img[8][8], const uint32_t match[8][8], char best_match)
+{
     const int compress_shift = 2;
 
-    for (int i = 0; i < 8; i++)
-        for (int j = 0; j < 8; j++)
+    for (size_t mul = 0; mul < 2; mul++)
+    {
+        Color color;
+        Vector vec = (Vector){.curr = 0, .m_idx = 0};
+
+        for (size_t j = 4*mul; j < 4*(mul+1); j++)
         {
-            if (match[i][j])
+            for (size_t i = 0; i < 8; i++)
             {
                 color.red = ((img[i][j] >> 16) & ((1 << 8) - 1)) >> compress_shift;
                 color.green = ((img[i][j] >> 8) & ((1 << 8) - 1)) >> compress_shift;
                 color.blue = ((img[i][j]) & ((1 << 8) - 1)) >> compress_shift;
                 add_color(&vec, color);
             }
+            
         }
 
-    color = get_dom_color(&vec);
-    return (Color) { .red = color.red << compress_shift, 
-                     .green = color.green << compress_shift, 
-                     .blue = color.blue << compress_shift };
-}
-
-
-void print_char(const char c, Color color)
-{
-    printf("\033[38;2;%d;%d;%dm%c\e[0m", color.red, color.green, color.blue, c);
+        color = get_dom_color(&vec);
+        print_char(best_match, (Color) { .red = color.red << compress_shift,
+                                         .green = color.green << compress_shift,
+                                         .blue = color.blue << compress_shift });
+    }
 }
 
 

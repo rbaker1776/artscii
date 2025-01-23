@@ -51,7 +51,7 @@ typedef struct {
     struct {
         Color color;
         int count;
-    } colors[64];
+    } colors[32];
     
     int curr;
     int m_idx;
@@ -73,8 +73,7 @@ Color get_dom_color(Vector* vec);
 Image read_img(const char* filepath);
 Image free_img(Image img);
 void process_img(const uint32_t** img, int img_height, int img_width);
-Color get_dominant_color(const uint32_t img[8][8], const uint32_t match[8][8]);
-void print_char(const char c, Color color);
+void display(const uint32_t img[8][8], const uint32_t match[8][8], char best_match);
 double cmp_sector(const uint32_t img1[8][8], const uint32_t img2[8][8]);
 
 
