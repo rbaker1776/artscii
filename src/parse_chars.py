@@ -1,3 +1,9 @@
+"""
+List of 95 lists containing 8 numbers
+Each list represents an 8x8 matrix containing
+the pixel brightness values of the 95 printable
+ASCII characters
+"""
 char_mats = [
     [ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 ],   # U+0020 (space)
     [ 0x18, 0x3C, 0x3C, 0x18, 0x18, 0x00, 0x18, 0x00 ],   # U+0021 (!)
@@ -98,7 +104,12 @@ char_mats = [
 
 assert(len(char_mats) == 95)
 
+
 def stringify_mat(mat):
+    """
+    Given the matrix for an ASCII character, convert it into
+    the string representation of a C multidimensional array
+    """
     ret = [ "\t{" ]
 
     for byte in mat:
@@ -115,11 +126,16 @@ def stringify_mat(mat):
     ret.append("\t},\n")
     return '\n'.join(ret) 
 
-with open("ascii.h", "w") as outfile:
+
+"""
+Convert the matrices into C multidimensional arrays
+and write them to the header file
+"""
+with open("tascii.h", "w") as outfile:
     outfile.truncate()
     outfile.writelines([ "#ifndef ASCII_H_A5D81824D8831E68\n", "#define ASCII_H_A5D81824D8831E68\n\n" ])
-    outfile.writelines([ "#include <stdint.h>\n\n\n" ])
-    outfile.writelines([ "static const uint8_t char_matrices[95][8][8] =\n", "{\n" ])
+    outfile.writelines([ """#include <stdint.h>\n\n/*\n95 8x8 matrices representing the pixel brightness\nvalues of the 95 printable ASCII characters\n*/\n""" ])
+    outfile.writelines([ "static const uint32_t char_matrices[95][8][8] =\n", "{\n" ])
 
     for char_matrix in char_mats:
         outfile.writelines([ stringify_mat(char_matrix) ])

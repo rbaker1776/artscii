@@ -1,17 +1,19 @@
 #include "artscii.h"
 
-void add_color(Vector *vec, Color color)
+/*
+Add color to the vector data structure and update
+the frequencies of the colors seen so far as needed
+*/
+void add_color(Vector *vec, uint32_t color)
 {
     bool flag = true;
     for (int i = 0; i < vec->curr; i++)
     {
-        if (vec->colors[i].color.red == color.red &&
-            vec->colors[i].color.green == color.green &&
-            vec->colors[i].color.blue == color.blue)
+        if (vec->colors[i].color == color)
         {
             flag = false;
             vec->colors[i].count++;
-            if (vec->m_idx != i)
+            if (vec->colors[vec->m_idx].count < vec->colors[i].count)
                 vec->m_idx = i;
             break;
         }
@@ -24,7 +26,10 @@ void add_color(Vector *vec, Color color)
     }
 }
 
-Color get_dom_color(Vector *vec)
+/*
+Return the most frequent color in the vector
+*/
+uint32_t get_dom_color(Vector *vec)
 {
     return vec->colors[vec->m_idx].color;
 }

@@ -6,8 +6,13 @@
 #include <stdint.h>
 #include <float.h>
 #include <stdbool.h>
+#include <assert.h>
 
 #pragma pack(push, 1)
+/*
+Struct to store the header
+information in a BMP image
+*/
 typedef struct
 {                              // Total: 54 bytes
     uint16_t type;             // Magic identifier: 0x4d42
@@ -29,28 +34,32 @@ typedef struct
 } BMPHeader;
 #pragma pack(pop)
 
+/*
+Struct to store a BMP image
+*/
 typedef struct
 {
     BMPHeader header;
     uint8_t *data;
 } BMPImage;
 
-typedef struct
-{
-    int red, green, blue;
-} Color;
-
+/*
+Struct to store the image to be processed
+*/
 typedef struct
 {
     int rows, cols;
     uint32_t **img;
 } Image;
 
+/*
+Vector struct definition
+*/
 typedef struct
 {
     struct
     {
-        Color color;
+        uint32_t color;
         int count;
     } colors[32];
 
@@ -58,33 +67,44 @@ typedef struct
     int m_idx;
 } Vector;
 
+/*
+Kernel definition for convolution
+*/
 #define KERNEL_SZ 3
 
-static const double kernel[KERNEL_SZ][KERNEL_SZ] = 
-{
+static const double kernel[KERNEL_SZ][KERNEL_SZ] =
     {
-        3.0 / 64,
-        8.0 / 64,
-        3.0 / 64,
-    },
-    {
-        8.0 / 64,
-        20.0 / 64,
-        8.0 / 64,
-    },
-    {
-        3.0 / 64,
-        8.0 / 64,
-        3.0 / 64,
-    },
+        {
+            3.0 / 64,
+            8.0 / 64,
+            3.0 / 64,
+        },
+        {
+            8.0 / 64,
+            20.0 / 64,
+            8.0 / 64,
+        },
+        {
+            3.0 / 64,
+            8.0 / 64,
+            3.0 / 64,
+        },
 };
 
-void add_color(Vector *vec, Color color);
-Color get_dom_color(Vector *vec);
+// MACROS to handle RGB values in colors
+#define BYTE(num) (num & ((1 << 8) - 1))
+#define RED(color) (BYTE((color >> 16)))
+#define GREEN(color) (BYTE((color >> 8)))
+#define BLUE(color) (BYTE(color))
 
+// Vector data structure functionality (to find dominant colors)
+void add_color(Vector *vec, uint32_t color);
+uint32_t get_dom_color(Vector *vec);
+
+// Image processing functionality
 Image read_img(const char *filepath);
 Image free_img(Image img);
-void process_img(const uint32_t **img, int img_height, int img_width);
+void process_img(const Image img);
 void display(const uint32_t img[8][8], const uint32_t match[8][8], char best_match);
 double cmp_sector(const uint32_t img1[8][8], const uint32_t img2[8][8]);
 

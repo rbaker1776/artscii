@@ -3,7 +3,10 @@
 
 #include <stdint.h>
 
-
+/*
+95 8x8 matrices representing the pixel brightness
+values of the 95 printable ASCII characters
+*/
 static const uint32_t char_matrices[95][8][8] =
 {
 	{
