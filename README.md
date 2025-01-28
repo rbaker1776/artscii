@@ -5,9 +5,10 @@ This project is an ASCII art generator built in C. It converts BMP image files i
 ## How to Build and Run
 
 ### Build Instructions
-1. Clone the repository:
+1. Clone the repository and open the directory:
    ```bash
    git clone https://github.com/rbaker1776/artscii.git
+   cd artscii
    ```
 2. Compile the program:
    - Using `make` (`make` needs to be installed):
